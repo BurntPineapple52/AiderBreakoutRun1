@@ -243,16 +243,6 @@
             ctx.fillStyle = "#0f0";
             ctx.fillText(text, 20, 30);
             
-            // Draw scanlines
-            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
-            ctx.lineWidth = 1;
-            for(let y = 20; y < 40; y += 2) {
-                ctx.beginPath();
-                ctx.moveTo(20, y);
-                ctx.lineTo(200, y);
-                ctx.stroke();
-            }
-            
             // Reset shadow
             ctx.shadowBlur = 0;
         }
@@ -269,16 +259,6 @@
             ctx.textAlign = "right";
             ctx.fillStyle = "#0f0";
             ctx.fillText(text, canvas.width - 20, 30);
-            
-            // Draw scanlines
-            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
-            ctx.lineWidth = 1;
-            for(let y = 20; y < 40; y += 2) {
-                ctx.beginPath();
-                ctx.moveTo(canvas.width - 200, y);
-                ctx.lineTo(canvas.width - 20, y);
-                ctx.stroke();
-            }
             
             // Reset shadow
             ctx.shadowBlur = 0;

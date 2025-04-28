@@ -231,15 +231,48 @@
         }
         
         function drawScore() {
-            ctx.font = "16px 'Courier New', monospace";
+            const centerX = canvas.width/2;
+            const text = `SCORE: ${score}`;
+            
+            // Draw glow effect
+            ctx.shadowColor = '#0f0';
+            ctx.shadowBlur = 10;
+            
+            // Draw main text
+            ctx.font = "bold 20px 'Courier New', monospace";
+            ctx.textAlign = "center";
             ctx.fillStyle = "#0f0";
-            ctx.fillText("Score: "+score, 8, 20);
+            ctx.fillText(text, centerX, 30);
+            
+            // Draw scanlines
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+            ctx.lineWidth = 1;
+            for(let y = 20; y < 40; y += 2) {
+                ctx.beginPath();
+                ctx.moveTo(centerX - 100, y);
+                ctx.lineTo(centerX + 100, y);
+                ctx.stroke();
+            }
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
         }
         
         function drawLives() {
-            ctx.font = "16px 'Courier New', monospace";
+            const text = `LIVES: ${lives}`;
+            
+            // Draw glow effect
+            ctx.shadowColor = '#0f0';
+            ctx.shadowBlur = 10;
+            
+            // Draw main text
+            ctx.font = "bold 20px 'Courier New', monospace";
+            ctx.textAlign = "center";
             ctx.fillStyle = "#0f0";
-            ctx.fillText("Lives: "+lives, canvas.width-100, 20);
+            ctx.fillText(text, canvas.width/2, 60);
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
         }
 
         function drawGameOver() {

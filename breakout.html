@@ -125,11 +125,35 @@
         
         // Draw elements
         function drawPaddle() {
+            // Create scanline gradient
+            const gradient = ctx.createLinearGradient(0, paddle.y, 0, paddle.y + paddle.height);
+            gradient.addColorStop(0, 'rgba(0, 255, 0, 0.8)');
+            gradient.addColorStop(0.5, 'rgba(0, 255, 0, 0.9)');
+            gradient.addColorStop(1, 'rgba(0, 255, 0, 0.7)');
+            
+            // Draw glow effect
+            ctx.shadowColor = '#0f0';
+            ctx.shadowBlur = 10;
+            
+            // Draw rounded paddle
             ctx.beginPath();
-            ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-            ctx.fillStyle = "#0f0";
+            ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, [4]);
+            ctx.fillStyle = gradient;
             ctx.fill();
             ctx.closePath();
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            
+            // Add scanlines
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.2)';
+            ctx.lineWidth = 1;
+            for(let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(paddle.x, paddle.y + paddle.height/3 * (i+0.5));
+                ctx.lineTo(paddle.x + paddle.width, paddle.y + paddle.height/3 * (i+0.5));
+                ctx.stroke();
+            }
         }
         
         function drawBall() {
@@ -144,11 +168,32 @@
             for(let r = 0; r < brick.row; r++) {
                 for(let c = 0; c < brick.col; c++) {
                     if(bricks[r][c].status === 1) {
+                        const brickX = bricks[r][c].x + Math.random() - 0.5;
+                        const brickY = bricks[r][c].y + Math.random() - 0.5;
+                        
+                        // Draw glow behind brick
+                        ctx.shadowColor = bricks[r][c].color;
+                        ctx.shadowBlur = 8;
+                        
+                        // Draw main brick with slight randomization
                         ctx.beginPath();
-                        ctx.rect(bricks[r][c].x, bricks[r][c].y, brick.width, brick.height);
+                        ctx.rect(brickX, brickY, brick.width, brick.height);
                         ctx.fillStyle = bricks[r][c].color;
                         ctx.fill();
                         ctx.closePath();
+                        
+                        // Reset shadow
+                        ctx.shadowBlur = 0;
+                        
+                        // Add scanlines
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                        ctx.lineWidth = 1;
+                        for(let i = 1; i < 4; i++) {
+                            ctx.beginPath();
+                            ctx.moveTo(brickX, brickY + brick.height/4 * i);
+                            ctx.lineTo(brickX + brick.width, brickY + brick.height/4 * i);
+                            ctx.stroke();
+                        }
                     }
                 }
             }

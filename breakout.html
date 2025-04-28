@@ -231,26 +231,25 @@
         }
         
         function drawScore() {
-            const centerX = canvas.width/2;
             const text = `SCORE: ${score}`;
             
             // Draw glow effect
             ctx.shadowColor = '#0f0';
             ctx.shadowBlur = 10;
             
-            // Draw main text
+            // Draw main text (left aligned)
             ctx.font = "bold 20px 'Courier New', monospace";
-            ctx.textAlign = "center";
+            ctx.textAlign = "left";
             ctx.fillStyle = "#0f0";
-            ctx.fillText(text, centerX, 30);
+            ctx.fillText(text, 20, 30);
             
             // Draw scanlines
             ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
             ctx.lineWidth = 1;
             for(let y = 20; y < 40; y += 2) {
                 ctx.beginPath();
-                ctx.moveTo(centerX - 100, y);
-                ctx.lineTo(centerX + 100, y);
+                ctx.moveTo(20, y);
+                ctx.lineTo(200, y);
                 ctx.stroke();
             }
             
@@ -265,11 +264,21 @@
             ctx.shadowColor = '#0f0';
             ctx.shadowBlur = 10;
             
-            // Draw main text
+            // Draw main text (right aligned)
             ctx.font = "bold 20px 'Courier New', monospace";
-            ctx.textAlign = "center";
+            ctx.textAlign = "right";
             ctx.fillStyle = "#0f0";
-            ctx.fillText(text, canvas.width/2, 60);
+            ctx.fillText(text, canvas.width - 20, 30);
+            
+            // Draw scanlines
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+            ctx.lineWidth = 1;
+            for(let y = 20; y < 40; y += 2) {
+                ctx.beginPath();
+                ctx.moveTo(canvas.width - 200, y);
+                ctx.lineTo(canvas.width - 20, y);
+                ctx.stroke();
+            }
             
             // Reset shadow
             ctx.shadowBlur = 0;

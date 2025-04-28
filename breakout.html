@@ -309,14 +309,26 @@
         }
         
         // Game logic
-        let storyBubble = {text: "", x: 0, y: 0, opacity: 0};
+        let storyBubble = {text: "", displayText: "", x: 0, y: 0, opacity: 0, charIndex: 0, lastCharTime: 0};
         
         function showStoryBubble() {
             if(score > 0 && score % 3 === 0 && storyBubble.opacity <= 0) {
                 storyBubble.text = story[Math.min(score/3 - 1, story.length - 1)];
+                storyBubble.displayText = "";
+                storyBubble.charIndex = 0;
+                storyBubble.lastCharTime = Date.now();
                 storyBubble.x = paddle.x + paddle.width/2;
                 storyBubble.y = paddle.y - 30;
                 storyBubble.opacity = 1;
+            }
+            
+            // Add characters one by one with delay
+            if(storyBubble.opacity > 0 && 
+               storyBubble.charIndex < storyBubble.text.length && 
+               Date.now() - storyBubble.lastCharTime > 50) {
+                storyBubble.displayText += storyBubble.text[storyBubble.charIndex];
+                storyBubble.charIndex++;
+                storyBubble.lastCharTime = Date.now();
             }
         }
         
@@ -325,8 +337,12 @@
                 ctx.font = "14px 'Courier New', monospace";
                 ctx.textAlign = "center";
                 ctx.fillStyle = `rgba(0, 255, 0, ${storyBubble.opacity})`;
-                ctx.fillText(storyBubble.text, storyBubble.x, storyBubble.y);
-                storyBubble.opacity -= 0.01;
+                ctx.fillText(storyBubble.displayText, storyBubble.x, storyBubble.y);
+                
+                // Only fade out after full text is shown
+                if(storyBubble.charIndex >= storyBubble.text.length) {
+                    storyBubble.opacity -= 0.01;
+                }
             }
         }
         

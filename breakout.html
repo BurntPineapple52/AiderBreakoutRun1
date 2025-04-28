@@ -81,6 +81,9 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         
+        // High score system
+        let highScore = localStorage.getItem('breakoutHighScore') || 0;
+        
         // Game elements
         const paddle = {
             x: canvas.width/2 - 50,
@@ -216,6 +219,42 @@
             ctx.fillStyle = "#0f0";
             ctx.fillText("Lives: "+lives, canvas.width-100, 20);
         }
+
+        function drawGameOver() {
+            // Dark overlay
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // CRT scanlines over overlay
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
+            ctx.lineWidth = 1;
+            for(let y = 0; y < canvas.height; y += 2) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // Game over text
+            ctx.font = '48px "Courier New", monospace';
+            ctx.fillStyle = '#0f0';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2 - 50);
+            
+            // Score text
+            ctx.font = '24px "Courier New", monospace';
+            ctx.fillText(`Score: ${score}`, canvas.width/2, canvas.height/2);
+            
+            // High score text with glow
+            ctx.shadowColor = '#0f0';
+            ctx.shadowBlur = 10;
+            ctx.fillText(`High Score: ${highScore}`, canvas.width/2, canvas.height/2 + 50);
+            ctx.shadowBlur = 0;
+            
+            // Restart prompt
+            ctx.font = '18px "Courier New", monospace';
+            ctx.fillText('Click or tap to restart', canvas.width/2, canvas.height/2 + 100);
+        }
         
         // Collision detection
         function collisionDetection() {
@@ -240,7 +279,10 @@
         
         // Game logic
         function update() {
-            if(gameOver) return;
+            if(gameOver) {
+                drawGameOver();
+                return;
+            }
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
@@ -279,8 +321,10 @@
                     lives--;
                     if(lives <= 0) {
                         gameOver = true;
-                        alert("GAME OVER");
-                        document.location.reload();
+                        if(score > highScore) {
+                            highScore = score;
+                            localStorage.setItem('breakoutHighScore', highScore);
+                        }
                     } else {
                         ball.x = canvas.width/2;
                         ball.y = canvas.height/2;
@@ -323,6 +367,15 @@
         canvas.addEventListener('mousemove', handlePaddleMove);
         canvas.addEventListener('touchmove', handleTouchMove, {passive: false});
         window.addEventListener('keydown', handleKeyDown);
+        
+        // Restart game on click/tap when game over
+        function handleRestart() {
+            if(gameOver) {
+                document.location.reload();
+            }
+        }
+        canvas.addEventListener('click', handleRestart);
+        canvas.addEventListener('touchend', handleRestart);
 
         initBricks();
         update();

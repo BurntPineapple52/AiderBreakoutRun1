@@ -209,17 +209,39 @@
                 }
             }
             
-            // Paddle movement
-            canvas.addEventListener('mousemove', (e) => {
-                let relativeX = e.clientX - canvas.offsetLeft;
-                if(relativeX > 0 && relativeX < canvas.width) {
-                    paddle.x = relativeX - paddle.width/2;
-                }
-            });
-            
             requestAnimationFrame(update);
         }
         
+        // Handle paddle movement
+        function handlePaddleMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            const relativeX = e.clientX - rect.left;
+            paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, relativeX - paddle.width/2));
+        }
+
+        // Touch support
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const relativeX = touch.clientX - rect.left;
+            paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, relativeX - paddle.width/2));
+        }
+
+        // Keyboard support
+        function handleKeyDown(e) {
+            if(e.key === 'ArrowLeft') {
+                paddle.x = Math.max(0, paddle.x - paddle.speed);
+            } else if(e.key === 'ArrowRight') {
+                paddle.x = Math.min(canvas.width - paddle.width, paddle.x + paddle.speed);
+            }
+        }
+
+        // Set up controls
+        canvas.addEventListener('mousemove', handlePaddleMove);
+        canvas.addEventListener('touchmove', handleTouchMove, {passive: false});
+        window.addEventListener('keydown', handleKeyDown);
+
         initBricks();
         update();
     </script>
